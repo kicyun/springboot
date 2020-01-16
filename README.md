@@ -32,3 +32,6 @@ https://www.h2database.com/html/download.html
 '''bash
 $ /bin/h2.sh
 '''
+
+## swagger
+http://localhost:8080/swagger-ui.html
