@@ -26,3 +26,9 @@ Java 8 설정
 $ jenv local oracle64-1.8.0.241
 $ java -version
 ```
+
+## H2 download
+https://www.h2database.com/html/download.html
+'''bash
+$ /bin/h2.sh
+'''
