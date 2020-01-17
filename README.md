@@ -1,4 +1,13 @@
-## springboot study
+# springboot study
+## 목적
+인수인계 목적으로 spring boot 공부(spring boot 안 본지 1년이 지나 처음부터 다시 공부)
+
+## 주요 참고 사이트
+https://daddyprogrammer.org/post/series/springboot2-make-rest-api/
+
+## 환경 
+Java8 인수 인계 받을 프로젝트가 Java8 으로 구성됨.
+
 ## 가상 환경 설정
 ## Install jenv
 brew install jenv
