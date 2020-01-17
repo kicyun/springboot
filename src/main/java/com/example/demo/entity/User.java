@@ -1,10 +1,12 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Proxy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +23,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "user")
-public class User implements UserDetails {
+@JsonIgnoreProperties({"hiberanteLazyInitializer", "handler"})
+@Proxy(lazy = false)
+public class User extends CommonDateEntity implements UserDetails {
     @Id // PK
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long msrl;
@@ -29,7 +33,7 @@ public class User implements UserDetails {
     private String uid;
     @Column(nullable = false, length = 100)
     private String name;
-    @Column(nullable = true, length = 100)
+    @Column(nullable = false, length = 100)
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
