@@ -11,7 +11,7 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@Api(tags = {"2. User"})
+@Api(tags = {"3. User"})
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/v1")

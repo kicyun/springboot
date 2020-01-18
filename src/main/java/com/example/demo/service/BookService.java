@@ -15,17 +15,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 @Service
 @Transactional
@@ -103,7 +100,10 @@ public class BookService {
     // 검색 기록 검색
     @Async
     public CompletableFuture<List<SearchHistoryResult>> getSearchHistory(String uid) {
-        List<SearchHistory> searchHistoryList = searchHistoryJpaRepo.findByUser(userJpaRepo.findByUid(uid).orElseThrow(CUserNotFoundException::new));
+        List<SearchHistory> searchHistoryList = searchHistoryJpaRepo
+                .findByUserOrderByCratedAtDesc(
+                        userJpaRepo.findByUid(uid)
+                                .orElseThrow(CUserNotFoundException::new));
 
         List<SearchHistoryResult> searchHistoryResultList = new ArrayList<>();
 

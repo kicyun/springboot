@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface SearchHistoryJpaRepo extends JpaRepository<SearchHistory, Long> {
-    List<SearchHistory> findByUser(User user);
+    List<SearchHistory> findByUserOrderByCratedAtDesc(User user);
 }

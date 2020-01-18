@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-@Api(tags = {"3.Book"})
+@Api(tags = {"2.Book"})
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/v1/search/book")
