@@ -1,8 +1,9 @@
 package com.example.demo.controller.v1.book;
 
+import com.example.demo.model.book.SearchHistoryResult;
+import com.example.demo.model.book.SearchRankResult;
 import com.example.demo.model.response.CommonResult;
 import com.example.demo.model.response.ListResult;
-import com.example.demo.model.response.SingleResult;
 import com.example.demo.service.BookService;
 import com.example.demo.service.ResponseService;
 import io.swagger.annotations.Api;
@@ -41,20 +42,19 @@ public class BookController {
             @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
     @ApiOperation(value = "책 검색 기록", notes = "책 검색 기록을 반환한다.")
-    @GetMapping(value = "/history")
-    public CommonResult history() {
+    @GetMapping(value = "/search/history")
+    public ListResult<SearchHistoryResult> history() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uid = authentication.getName();
-        return responseService.getListResult(bookService.history(uid));
+        return responseService.getListResult(bookService.searchHistory(uid));
     }
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
     @ApiOperation(value = "인기 키워드 목록", notes = "인기 키워드 목록을 반환한다.")
-    @GetMapping(value = "/rank")
-    public CommonResult rank() {
-        bookService.rank();
-        return responseService.getSuccessResult();
+    @GetMapping(value = "/search/rank")
+    public ListResult<SearchRankResult> rank() {
+        return responseService.getListResult(bookService.searchRank());
     }
 }

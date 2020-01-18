@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-public class History extends CommonDateEntity {
+public class SearchHistory extends CommonDateEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long historyId;
@@ -21,7 +21,7 @@ public class History extends CommonDateEntity {
     private User user;  // 검색결과 - 회원의 관계 - N:1
 
     // 생성자
-    public History(User user, String keyword) {
+    public SearchHistory(User user, String keyword) {
         this.user = user;
         this.keyword = keyword;
     }

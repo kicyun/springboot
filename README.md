@@ -4,6 +4,7 @@
 
 ## 주요 참고 사이트
 https://daddyprogrammer.org/post/series/springboot2-make-rest-api/
+https://elinshu.tistory.com/entry/Redis-ZSetOperations-example
 
 ## 환경 
 Java8 인수 인계 받을 프로젝트가 Java8 으로 구성됨.
