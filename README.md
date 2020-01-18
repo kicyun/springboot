@@ -7,6 +7,8 @@
 https://daddyprogrammer.org/post/series/springboot2-make-rest-api/
 ### redis sorted set을 이용한 랭킹 구현
 https://elinshu.tistory.com/entry/Redis-ZSetOperations-example
+### restTemplate
+https://sunpil.tistory.com/295
 
 ## 환경 
 Java8 인수 인계 받을 프로젝트가 Java8 으로 구성됨.

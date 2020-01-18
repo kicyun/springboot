@@ -13,10 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api(tags = {"3.Book"})
 @RequiredArgsConstructor
@@ -31,11 +28,14 @@ public class BookController {
     })
     @ApiOperation(value = "책 검색", notes = "책을 검색한다.")
     @GetMapping(value = "/search/{keyword}")
-    public CommonResult search(@PathVariable String keyword) {
+    public CommonResult search(
+                @RequestParam(name = "keyword") String keyword,
+                @RequestParam(name = "page", defaultValue = "1") Integer page) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uid = authentication.getName();
-        bookService.search(uid, keyword);
-        return responseService.getSuccessResult();
+        bookService.saveSearchHistory(uid, keyword);
+        bookService.incrementSearchCount(keyword);
+        return responseService.getSingleResult(bookService.search(keyword, page));
     }
 
     @ApiImplicitParams({
@@ -46,12 +46,12 @@ public class BookController {
     public ListResult<SearchHistoryResult> history() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uid = authentication.getName();
-        return responseService.getListResult(bookService.searchHistory(uid));
+        return responseService.getListResult(bookService.getSearchHistory(uid));
     }
 
     @ApiOperation(value = "인기 키워드 목록", notes = "인기 키워드 목록을 반환한다.")
     @GetMapping(value = "/search/rank")
     public ListResult<SearchRankResult> rank() {
-        return responseService.getListResult(bookService.searchRank());
+        return responseService.getListResult(bookService.getSearchRank());
     }
 }

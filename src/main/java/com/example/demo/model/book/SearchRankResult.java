@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class SearchRankResult {
     String keyword;
-    Double hit;
+    Double count;
 }
