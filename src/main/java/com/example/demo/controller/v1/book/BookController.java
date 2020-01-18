@@ -23,7 +23,7 @@ import java.util.concurrent.Future;
 @Api(tags = {"3.Book"})
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/v1/book")
+@RequestMapping(value = "/v1/search/book")
 public class BookController {
     private final BookService bookService;
     private final ResponseService responseService;
@@ -32,9 +32,9 @@ public class BookController {
             @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
     @ApiOperation(value = "책 검색", notes = "책을 검색한다.")
-    @GetMapping(value = "/search/{keyword}")
+    @GetMapping(value = "/{keyword}")
     public CommonResult search(
-                @RequestParam(name = "keyword") String keyword,
+                @PathVariable(name = "keyword") String keyword,
                 @RequestParam(name = "page", defaultValue = "1") Integer page) throws InterruptedException, ExecutionException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uid = authentication.getName();
@@ -49,7 +49,7 @@ public class BookController {
             @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
     @ApiOperation(value = "책 검색 기록", notes = "책 검색 기록을 반환한다.")
-    @GetMapping(value = "/search/history")
+    @GetMapping(value = "/history")
     public ListResult<SearchHistoryResult> history() throws InterruptedException, ExecutionException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uid = authentication.getName();
@@ -59,7 +59,7 @@ public class BookController {
     }
 
     @ApiOperation(value = "인기 키워드 목록", notes = "인기 키워드 목록을 반환한다.")
-    @GetMapping(value = "/search/rank")
+    @GetMapping(value = "/rank")
     public ListResult<SearchRankResult> rank() throws InterruptedException, ExecutionException {
         CompletableFuture<List<SearchRankResult>> searchRankFuture = bookService.getSearchRank();
         CompletableFuture.allOf(searchRankFuture).join();

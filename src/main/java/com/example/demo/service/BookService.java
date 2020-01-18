@@ -42,20 +42,46 @@ public class BookService {
     private String KAKAO_API_BOOK_URL;
     @Value("${kakao.api.key}")
     private String KAKAO_REST_API_KEY;
+    @Value("${naver.api.book.url}")
+    private String NAVER_API_BOOK_URL;
+    @Value("${naver.api.client.id}")
+    private String NAVER_API_CLIENT_ID;
+    @Value("${naver.api.client.secret}")
+    private String NAVER_API_CLIENT_SECRET;
 
-    // 책 검색
-    @Async
-    public CompletableFuture<String> search(String keyword, int page) {
+    private String searchKakaoBook(String keyword, int page) {
         final HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "KakaoAK " + KAKAO_REST_API_KEY);
         final HttpEntity<String> entity = new HttpEntity(headers);
 
         final String url = KAKAO_API_BOOK_URL + "?query=" + keyword + "&page=" + page;
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+        return responseEntity.getBody();
+    }
+
+    private String searchNaverBook(String keyword, int page) {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Naver-Client-Id", NAVER_API_CLIENT_ID);
+        headers.set("X-Naver-Client-Secret", NAVER_API_CLIENT_SECRET);
+        final HttpEntity<String> entity = new HttpEntity(headers);
+
+        final String url = NAVER_API_BOOK_URL + "?query=" + keyword + "&start=" + (1 + (page-1) * 10) + "&size=10";
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+        return responseEntity.getBody();
+    }
+
+    // 책 검색
+    @Async
+    public CompletableFuture<String> search(String keyword, int page) {
+
         try {
-            ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-            return CompletableFuture.completedFuture(responseEntity.getBody());
-        } catch (Exception e) {
-            return CompletableFuture.completedFuture(e.getMessage());
+            return CompletableFuture.completedFuture(searchKakaoBook(keyword, page));
+        } catch (Exception exceptionKakao) {
+            try {
+                return CompletableFuture.completedFuture(searchNaverBook(keyword, page));
+            } catch (Exception exceptionNaver) {
+                return CompletableFuture.completedFuture(exceptionNaver.getMessage());
+            }
         }
     }
 
