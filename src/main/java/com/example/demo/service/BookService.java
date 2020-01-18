@@ -14,6 +14,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -22,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 @Service
 @Transactional
@@ -40,7 +44,8 @@ public class BookService {
     private String KAKAO_REST_API_KEY;
 
     // 책 검색
-    public String search(String keyword, int page) {
+    @Async
+    public CompletableFuture<String> search(String keyword, int page) {
         final HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "KakaoAK " + KAKAO_REST_API_KEY);
         final HttpEntity<String> entity = new HttpEntity(headers);
@@ -48,13 +53,14 @@ public class BookService {
         final String url = KAKAO_API_BOOK_URL + "?query=" + keyword + "&page=" + page;
         try {
             ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-            return responseEntity.getBody();
+            return CompletableFuture.completedFuture(responseEntity.getBody());
         } catch (Exception e) {
-            return e.getMessage();
+            return CompletableFuture.completedFuture(e.getMessage());
         }
     }
 
     // 검색 기록 저장
+    @Async
     public void saveSearchHistory(String uid, String keyword) {
 
         SearchHistory history = new SearchHistory(userJpaRepo.findByUid(uid).orElseThrow(CUserNotFoundException::new), keyword);
@@ -62,13 +68,15 @@ public class BookService {
     }
 
     // 키워드 검색 수 증가
+    @Async
     public void incrementSearchCount(String keyword) {
         ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
         zSetOperations.incrementScore(cacheKey, keyword, 1);
     }
 
     // 검색 기록 검색
-    public List<SearchHistoryResult> getSearchHistory(String uid) {
+    @Async
+    public CompletableFuture<List<SearchHistoryResult>> getSearchHistory(String uid) {
         List<SearchHistory> searchHistoryList = searchHistoryJpaRepo.findByUser(userJpaRepo.findByUid(uid).orElseThrow(CUserNotFoundException::new));
 
         List<SearchHistoryResult> searchHistoryResultList = new ArrayList<>();
@@ -80,11 +88,12 @@ public class BookService {
 
             searchHistoryResultList.add(searchHistoryResult);
         }
-        return searchHistoryResultList;
+        return CompletableFuture.completedFuture(searchHistoryResultList);
     }
 
     // 검색 랭킹
-    public List<SearchRankResult> getSearchRank() {
+    @Async
+    public CompletableFuture<List<SearchRankResult>> getSearchRank() {
         ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
         Set<ZSetOperations.TypedTuple<String>> rankingSet = zSetOperations.reverseRangeWithScores(cacheKey, 0, 9);
         List<SearchRankResult> searchRankResultList = new ArrayList<>();
@@ -97,7 +106,7 @@ public class BookService {
             searchRankResultList.add(searchRankResult);
         }
 
-        return searchRankResultList;
+        return CompletableFuture.completedFuture(searchRankResultList);
 
     }
 }

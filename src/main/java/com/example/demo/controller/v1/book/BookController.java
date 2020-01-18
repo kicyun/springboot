@@ -15,6 +15,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 @Api(tags = {"3.Book"})
 @RequiredArgsConstructor
 @RestController
@@ -30,12 +35,14 @@ public class BookController {
     @GetMapping(value = "/search/{keyword}")
     public CommonResult search(
                 @RequestParam(name = "keyword") String keyword,
-                @RequestParam(name = "page", defaultValue = "1") Integer page) {
+                @RequestParam(name = "page", defaultValue = "1") Integer page) throws InterruptedException, ExecutionException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uid = authentication.getName();
         bookService.saveSearchHistory(uid, keyword);
         bookService.incrementSearchCount(keyword);
-        return responseService.getSingleResult(bookService.search(keyword, page));
+        CompletableFuture<String> searchFuture = bookService.search(keyword, page);
+        CompletableFuture.allOf(searchFuture).join();
+        return responseService.getSingleResult(searchFuture.get());
     }
 
     @ApiImplicitParams({
@@ -43,15 +50,19 @@ public class BookController {
     })
     @ApiOperation(value = "책 검색 기록", notes = "책 검색 기록을 반환한다.")
     @GetMapping(value = "/search/history")
-    public ListResult<SearchHistoryResult> history() {
+    public ListResult<SearchHistoryResult> history() throws InterruptedException, ExecutionException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uid = authentication.getName();
-        return responseService.getListResult(bookService.getSearchHistory(uid));
+        CompletableFuture<List<SearchHistoryResult>> searchHistoryFuture = bookService.getSearchHistory(uid);
+        CompletableFuture.allOf(searchHistoryFuture).join();
+        return responseService.getListResult(searchHistoryFuture.get());
     }
 
     @ApiOperation(value = "인기 키워드 목록", notes = "인기 키워드 목록을 반환한다.")
     @GetMapping(value = "/search/rank")
-    public ListResult<SearchRankResult> rank() {
-        return responseService.getListResult(bookService.getSearchRank());
+    public ListResult<SearchRankResult> rank() throws InterruptedException, ExecutionException {
+        CompletableFuture<List<SearchRankResult>> searchRankFuture = bookService.getSearchRank();
+        CompletableFuture.allOf(searchRankFuture).join();
+        return responseService.getListResult(searchRankFuture.get());
     }
 }

@@ -9,6 +9,9 @@ https://daddyprogrammer.org/post/series/springboot2-make-rest-api/
 https://elinshu.tistory.com/entry/Redis-ZSetOperations-example
 ### restTemplate
 https://sunpil.tistory.com/295
+### aync 설정
+https://heowc.dev/2018/02/10/spring-boot-async/
+https://howtodoinjava.com/spring-boot2/rest/enableasync-async-controller/
 
 ## 환경 
 Java8 인수 인계 받을 프로젝트가 Java8 으로 구성됨.
