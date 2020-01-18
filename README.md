@@ -3,7 +3,9 @@
 인수인계 목적으로 spring boot 공부(spring boot 안 본지 1년이 지나 처음부터 다시 공부)
 
 ## 주요 참고 사이트
+### spring boot rest 기본 구조
 https://daddyprogrammer.org/post/series/springboot2-make-rest-api/
+### redis sorted set을 이용한 랭킹 구현
 https://elinshu.tistory.com/entry/Redis-ZSetOperations-example
 
 ## 환경 

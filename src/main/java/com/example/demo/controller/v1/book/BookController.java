@@ -49,9 +49,6 @@ public class BookController {
         return responseService.getListResult(bookService.searchHistory(uid));
     }
 
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
-    })
     @ApiOperation(value = "인기 키워드 목록", notes = "인기 키워드 목록을 반환한다.")
     @GetMapping(value = "/search/rank")
     public ListResult<SearchRankResult> rank() {
