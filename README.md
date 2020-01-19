@@ -8,7 +8,7 @@
 - SpringSecurity 
 - JPA, H2
 - Redis Embedded
-- Intellij Community
+- Intellij 
 
 ## 프로젝트 실행
 - H2 database 설치
@@ -19,6 +19,15 @@
     - Run -> SpringBootApiApplication
 - Swagger
     - http://localhost:8080/swagger-ui.html
+
+## 주요 구현 및 적용 내용
+- @Async / ComplatableFuture 를 이용한 비동기 구현
+- ControllerAdvisor / MessageSource 를 이용한 exception 처리
+- Redis를 이용한 캐싱
+- Redis를 이용한 인기 키워드 목록(rank) 구현
+- swagger 적용
+- SpringSecurity 를 이용한 인증(JWT)
+- restTemplate 을 이용한 카카오/네이버 책 검색 rest API 호출
 
 ## 테스트
 - 가입(signup)
