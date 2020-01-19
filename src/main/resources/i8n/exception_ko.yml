@@ -14,3 +14,6 @@ entryPointException:
 bookSearchException:
   code: "-1003"
   msg: "책 검색 중 에러가 발생했습니다. "
+accessDenied:
+  code: "-1004"
+  msg: "보유한 권한으로 접근할수 없는 리소스 입니다."

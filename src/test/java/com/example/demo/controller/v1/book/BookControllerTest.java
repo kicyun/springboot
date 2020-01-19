@@ -86,6 +86,17 @@ class BookControllerTest {
                 .andExpect(redirectedUrl("/exception/entrypoint"));
     }
 
+
+    @Test
+    @WithMockUser(username = "mockUser", roles = {"ADMIN"}) // 가상의 Mock 유저 대입
+    public void accessdenied() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/v1/search/book/history"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/exception/accessdenied"));
+    }
+
     @Test
     void search() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
