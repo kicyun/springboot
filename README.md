@@ -1,6 +1,6 @@
 # springboot study
 ## 개요
-- spring boot 공부를 목적으로 SpringBoot2 framework 기반의 RESTful 책검색 api 서비스
+- spring boot 공부를 목적으로 SpringBoot2 framework 기반의 RESTful 책검색 api 서비스 개발
 
 ## 개발환경
 - Java 8
@@ -21,13 +21,13 @@
     - http://localhost:8080/swagger-ui.html
 
 ## 주요 구현 및 적용 내용
-- @Async / ComplatableFuture 를 이용한 비동기 구현
+- @Async / ComplatableFuture 를 이용한 비동기 구현 (thread pool 설정)
 - ControllerAdvisor / MessageSource 를 이용한 exception 처리
 - Redis를 이용한 캐싱
 - Redis를 이용한 인기 키워드 목록(rank) 구현
 - swagger 적용
 - SpringSecurity 를 이용한 인증(JWT)
-- restTemplate 을 이용한 카카오/네이버 책 검색 rest API 호출
+- restTemplate 을 이용한 카카오/네이버 책 검색 rest API 호출 (thread pool 설정)
 
 ## 테스트
 - 가입(signup)
