@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.advice.exception.CBookSearchFailedException;
 import com.example.demo.advice.exception.CUserNotFoundException;
 import com.example.demo.entity.SearchHistory;
 import com.example.demo.model.book.SearchHistoryResult;
@@ -69,16 +70,12 @@ public class BookService {
 
     // 책 검색
     @Async
-    public CompletableFuture<String> search(String keyword, int page) {
+    public CompletableFuture<String> search(String keyword, int page) throws Exception {
 
         try {
             return CompletableFuture.completedFuture(searchKakaoBook(keyword, page));
-        } catch (Exception exceptionKakao) {
-            try {
-                return CompletableFuture.completedFuture(searchNaverBook(keyword, page));
-            } catch (Exception exceptionNaver) {
-                return CompletableFuture.completedFuture(exceptionNaver.getMessage());
-            }
+        } catch (Exception e) {
+            return CompletableFuture.completedFuture(searchNaverBook(keyword, page));
         }
     }
 

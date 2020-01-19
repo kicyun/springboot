@@ -11,3 +11,6 @@ emailSigninFailed:
 entryPointException:
   code: "-1002"
   msg: "해당 리소스에 대한 접근 권한이 없습니다."
+bookSearchException:
+  code: "-1003"
+  msg: "책 검색 중 에러가 발생했습니다. "

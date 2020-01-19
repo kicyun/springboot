@@ -1,5 +1,6 @@
 package com.example.demo.controller.v1.book;
 
+import com.example.demo.advice.exception.CBookSearchFailedException;
 import com.example.demo.model.book.SearchHistoryResult;
 import com.example.demo.model.book.SearchRankResult;
 import com.example.demo.model.response.CommonResult;
@@ -39,9 +40,13 @@ public class BookController {
         String uid = authentication.getName();
         bookService.saveSearchHistory(uid, keyword);
         bookService.incrementSearchCount(keyword);
-        CompletableFuture<String> searchFuture = bookService.search(keyword, page);
-        CompletableFuture.allOf(searchFuture).join();
-        return responseService.getSingleResult(searchFuture.get());
+        try {
+            CompletableFuture<String> searchFuture = bookService.search(keyword, page);
+            CompletableFuture.allOf(searchFuture).join();
+            return responseService.getSingleResult(searchFuture.get());
+        } catch (Exception e) {
+            throw new CBookSearchFailedException(e.getMessage());
+        }
     }
 
     @ApiImplicitParams({

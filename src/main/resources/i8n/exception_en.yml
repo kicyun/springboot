@@ -11,3 +11,6 @@ emailSigninFailed:
 entryPointException:
   code: "-1002"
   msg: "You DO NOT have permission to access this resource."
+bookSearchException:
+  code: "-1003"
+  msg: "An error has occurred when search books. "

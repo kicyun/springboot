@@ -1,6 +1,7 @@
 package com.example.demo.advice;
 
 import com.example.demo.advice.exception.CAuthenticationEntryPointException;
+import com.example.demo.advice.exception.CBookSearchFailedException;
 import com.example.demo.advice.exception.CEmailSigninFailedException;
 import com.example.demo.advice.exception.CUserNotFoundException;
 import com.example.demo.model.response.CommonResult;
@@ -9,13 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.persistence.Access;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.file.AccessDeniedException;
 
@@ -49,6 +47,12 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     protected CommonResult authenticationEntryPointException(HttpServletRequest request, CAuthenticationEntryPointException e) {
         return responseService.getFailResult(Integer.valueOf(getMessage("entryPointException.code")), getMessage("entryPointException.msg"));
+    }
+
+    @ExceptionHandler(CBookSearchFailedException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult bookSearchFailed(HttpServletRequest request, CBookSearchFailedException e) {
+        return responseService.getFailResult(Integer.valueOf(getMessage("bookSearchException.code")), getMessage("bookSearchException.msg") + e.getLocalizedMessage());
     }
 
     @ExceptionHandler(AccessDeniedException.class)
