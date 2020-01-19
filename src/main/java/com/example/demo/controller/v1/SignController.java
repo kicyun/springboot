@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -32,9 +33,10 @@ public class SignController {
     @PostMapping(value = "/signin")
     public SingleResult<String> signin(@ApiParam(value = "회원ID : 이메일", required = true) @RequestParam String id,
                                        @ApiParam(value = "비밀번호", required = true) @RequestParam String password) throws InterruptedException, ExecutionException {
-        CompletableFuture<User> userFuture = userService.findByUid(id);
+        CompletableFuture<Optional<User>> userFuture = userService.findByUid(id);
         CompletableFuture.allOf(userFuture).join();
-        User user = userFuture.get();
+        User user = userFuture.get()
+                .orElseThrow(CEmailSigninFailedException::new);
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new CEmailSigninFailedException();
         }
