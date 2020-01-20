@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @Transactional
@@ -71,7 +72,6 @@ public class BookService {
     // 책 검색
     @Async
     public CompletableFuture<String> search(String keyword, int page) throws Exception {
-
         try {
             return CompletableFuture.completedFuture(searchKakaoBook(keyword, page));
         } catch (Exception e) {
@@ -96,11 +96,14 @@ public class BookService {
 
     // 검색 기록 검색
     @Async
-    public CompletableFuture<List<SearchHistoryResult>> getSearchHistory(String uid) {
-        List<SearchHistory> searchHistoryList = searchHistoryJpaRepo
+    public CompletableFuture<List<SearchHistoryResult>> getSearchHistory(String uid) throws InterruptedException, ExecutionException {
+        CompletableFuture<List<SearchHistory>> searchHistoryListFuture = searchHistoryJpaRepo
                 .findByUserOrderByCratedAtDesc(
                         userJpaRepo.findByUid(uid)
                                 .orElseThrow(CUserNotFoundException::new));
+
+        searchHistoryListFuture.allOf(searchHistoryListFuture).join();
+        List<SearchHistory> searchHistoryList = searchHistoryListFuture.get();
 
         List<SearchHistoryResult> searchHistoryResultList = new ArrayList<>();
 
