@@ -8,6 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +24,7 @@ class UserJpaRepoTest {
     private PasswordEncoder passwordEncoder;
 
     @Test
-    public void whenFindByUid_thenReturnUser() {
+    public void whenFindByUid_thenReturnUser() throws InterruptedException, ExecutionException {
         String uid = "godoftest@test.com";
         String name = "godoftest";
         userJpaRepo.save(User.builder()
@@ -32,7 +34,9 @@ class UserJpaRepoTest {
                 .roles(Collections.singletonList("ROLE_USER"))
                 .build()
         );
-        Optional<User> user = userJpaRepo.findByUid(uid);
+        CompletableFuture<Optional<User>> userFuture = userJpaRepo.findByUid(uid);
+        userFuture.allOf(userFuture).join();
+        Optional<User> user = userFuture.get();
         assertNotNull(user);
         assertTrue(user.isPresent());
         assertEquals(user.get().getName(), name);

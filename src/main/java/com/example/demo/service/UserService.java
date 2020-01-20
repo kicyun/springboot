@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @Transactional
@@ -19,10 +20,12 @@ public class UserService {
 
     // 사용자 검색
     @Async
-    public CompletableFuture<Optional<User>> findByUid(String id) {
+    public CompletableFuture<Optional<User>> findByUid(String uid) throws InterruptedException, ExecutionException {
+        CompletableFuture<Optional<User>> userFuture = userJpaRepo.findByUid(uid);
+        CompletableFuture.allOf(userFuture).join();
+        Optional<User> user = userFuture.get();
         return CompletableFuture
-                .completedFuture(userJpaRepo
-                    .findByUid(id));
+                .completedFuture(user);
                     //.orElseThrow(CEmailSigninFailedException::new));
     }
 

@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.advice.exception.CBookSearchFailedException;
 import com.example.demo.advice.exception.CUserNotFoundException;
 import com.example.demo.entity.SearchHistory;
+import com.example.demo.entity.User;
 import com.example.demo.model.book.SearchHistoryResult;
 import com.example.demo.model.book.SearchRankResult;
 import com.example.demo.repo.SearchHistoryJpaRepo;
@@ -23,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -84,9 +86,12 @@ public class BookService {
 
     // 검색 기록 저장
     @Async
-    public void saveSearchHistory(String uid, String keyword) {
+    public void saveSearchHistory(String uid, String keyword) throws InterruptedException, ExecutionException {
 
-        SearchHistory history = new SearchHistory(userJpaRepo.findByUid(uid).orElseThrow(CUserNotFoundException::new), keyword);
+        CompletableFuture<Optional<User>> userFuture = userJpaRepo.findByUid(uid);
+        CompletableFuture.allOf(userFuture).join();
+        Optional<User> user = userFuture.get();
+        SearchHistory history = new SearchHistory(user.orElseThrow(CUserNotFoundException::new), keyword);
         searchHistoryJpaRepo.save(history);
     }
 
@@ -100,10 +105,13 @@ public class BookService {
     // 검색 기록 검색
     @Async
     public CompletableFuture<List<SearchHistoryResult>> getSearchHistory(String uid) throws InterruptedException, ExecutionException {
+        CompletableFuture<Optional<User>> userFuture = userJpaRepo.findByUid(uid);
+        CompletableFuture.allOf(userFuture).join();
+        Optional<User> user = userFuture.get();
+
         CompletableFuture<List<SearchHistory>> searchHistoryListFuture = searchHistoryJpaRepo
                 .findByUserOrderByCratedAtDesc(
-                        userJpaRepo.findByUid(uid)
-                                .orElseThrow(CUserNotFoundException::new));
+                        user.orElseThrow(CUserNotFoundException::new));
 
         searchHistoryListFuture.allOf(searchHistoryListFuture).join();
         List<SearchHistory> searchHistoryList = searchHistoryListFuture.get();
