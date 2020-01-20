@@ -8,6 +8,7 @@ import com.example.demo.model.book.SearchRankResult;
 import com.example.demo.repo.SearchHistoryJpaRepo;
 import com.example.demo.repo.UserJpaRepo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -26,6 +27,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -75,6 +77,7 @@ public class BookService {
         try {
             return CompletableFuture.completedFuture(searchKakaoBook(keyword, page));
         } catch (Exception e) {
+            log.error("KAKAO SEARCH BOOK FAILED. " + e.getMessage());
             return CompletableFuture.completedFuture(searchNaverBook(keyword, page));
         }
     }

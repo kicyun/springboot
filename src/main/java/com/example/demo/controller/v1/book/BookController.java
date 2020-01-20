@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+@Slf4j
 @Api(tags = {"2.Book"})
 @RequiredArgsConstructor
 @RestController
@@ -45,7 +47,8 @@ public class BookController {
             CompletableFuture.allOf(searchFuture).join();
             return responseService.getSingleResult(searchFuture.get());
         } catch (Exception e) {
-            throw new CBookSearchFailedException(e.getMessage());
+            log.error("SEARCH BOOK FAILED. " + e.getMessage());
+            throw new CBookSearchFailedException();
         }
     }
 
