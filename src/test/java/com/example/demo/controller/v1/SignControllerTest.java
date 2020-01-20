@@ -2,10 +2,12 @@ package com.example.demo.controller.v1;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -29,16 +31,32 @@ class SignControllerTest {
 
     @Test
     public void signin() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("id", "tester3@test.com");
-        params.add("password", "test");
-        mockMvc.perform(post("/v1/singin").params(params))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.code").value(0))
-                .andExpect(jsonPath("$.msg").exists())
-                .andExpect(jsonPath("$.data").exists());
+        long epochTime = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond();
+        {
+            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            params.add("id", "test_" + epochTime + "@test.com");
+            params.add("password", "test");
+            params.add("name", "test_" + epochTime);
+            mockMvc.perform(post("/v1/signup").params(params))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.code").value(0))
+                    .andExpect(jsonPath("$.msg").exists());
+        }
+        {
+            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            params.add("id", "test_" + epochTime + "@test.com");
+            params.add("password", "test");
+            MvcResult result = mockMvc.perform(post("/v1/signin").params(params))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.code").value(0))
+                    .andExpect(jsonPath("$.msg").exists())
+                    .andExpect(jsonPath("$.data").exists())
+                    .andReturn();
+        }
     }
 
     @Test
