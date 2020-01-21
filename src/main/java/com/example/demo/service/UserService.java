@@ -26,7 +26,6 @@ public class UserService {
         Optional<User> user = userFuture.get();
         return CompletableFuture
                 .completedFuture(user);
-                    //.orElseThrow(CEmailSigninFailedException::new));
     }
 
     // 사용자 저장
