@@ -17,6 +17,9 @@
     - Run -> springboot [bootRun]
 - Swagger
     - http://localhost:8080/swagger-ui.html
+- 트러블 슈팅
+    - 디버깅 후 재 실행 시킬 때 redis 관련 에러 발싱 시 해결 방안
+        - 기존 임베디드 redis-server가 동작 중인 상태이므로 "ps -ef | grep redis" 로 redis-server를 찾은 후 kill 처리 
 
 ## 주요 구현 및 적용 내용
 - @Async / ComplatableFuture 를 이용한 비동기 구현 (thread pool 설정)
