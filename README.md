@@ -11,12 +11,10 @@
 - Intellij 
 
 ## 프로젝트 실행
-- H2 database 설치
-    - https://www.h2database.com/html/download.html
 - Enable annotation processing
-    - Preferences - Annotation Procesors - Enable annotation processing 체크
+    - Preferences - Build, Execution, Deployment - Compiler - Annotation Processors - Enable annotation processing 체크
 - 실행
-    - Run -> SpringBootApiApplication
+    - Run -> springboot [bootRun]
 - Swagger
     - http://localhost:8080/swagger-ui.html
 
