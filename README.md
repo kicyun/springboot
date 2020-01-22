@@ -31,9 +31,18 @@
 - restTemplate 을 이용한 카카오/네이버 책 검색 rest API 호출 (thread pool 설정)
 
 ## 테스트
-### Swagger 를 이용하여 테스트
-- http://localhost:8080/swagger-ui.html
-### curl 을 이용하여 테스트
+### Swagger 를 이용한 테스트
+- 가입(signup)
+    - http://localhost:8080/swagger-ui.html#!/1._Sign/signupUsingPOST
+- 로그인(signin)
+    - http://localhost:8080/swagger-ui.html#!/1._Sign/signinUsingPOST
+- 책검색(search)
+    - http://localhost:8080/swagger-ui.html#!/2.Book/searchUsingGET
+- 내 검색 히스토리(history)
+    - http://localhost:8080/swagger-ui.html#!/2.Book/historyUsingGET
+- 인기 키워드 목록(rank)
+    - http://localhost:8080/swagger-ui.html#!/2.Book/rankUsingGET
+### curl 을 이용한 테스트
 - 가입(signup)
 	- curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' 'http://localhost:8080/v1/signup?id=tester%40test.com&password=test&name=test'
 - 로그인(signin)
