@@ -31,16 +31,19 @@
 - restTemplate 을 이용한 카카오/네이버 책 검색 rest API 호출 (thread pool 설정)
 
 ## 테스트
+### Swagger 를 이용하여 테스트
+- http://localhost:8080/swagger-ui.html
+### curl 을 이용하여 테스트
 - 가입(signup)
 	- curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' 'http://localhost:8080/v1/signup?id=tester%40test.com&password=test&name=test'
 - 로그인(signin)
 	- curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' 'http://localhost:8080/v1/signin?id=tester%40test.com&password=test'
 - 책검색(search)
 	- signin 의 response 값 중 data값을 header의 'X-AUTH-TOKEN' 으로 지정
-	- curl -X GET --header 'Accept: application/json' --header 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4Iiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTU3OTM2NTk5NCwiZXhwIjoxNTc5MzY5NTk0fQ.lgESUWPLdtZvZ3iwD05cWBcwteQhH5K700m0UMwvPCQ' 'http://localhost:8080/v1/search/book/%EC%8A%A4%ED%94%84%EB%A7%81%EB%B6%80%ED%8A%B8?page=1'
+	- curl -X GET --header 'Accept: application/json' --header 'X-AUTH-TOKEN: X.X.X' 'http://localhost:8080/v1/search/book/%EC%8A%A4%ED%94%84%EB%A7%81%EB%B6%80%ED%8A%B8?page=1'
 - 내 검색 히스토리(history)
 	- signin 의 response 값 중 data값을 header의 'X-AUTH-TOKEN' 으로 지정
-	- curl -X GET --header 'Accept: application/json' --header 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4Iiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTU3OTM2NTk5NCwiZXhwIjoxNTc5MzY5NTk0fQ.lgESUWPLdtZvZ3iwD05cWBcwteQhH5K700m0UMwvPCQ' 'http://localhost:8080/v1/search/book/history'
+	- curl -X GET --header 'Accept: application/json' --header 'X-AUTH-TOKEN: X.X.X' 'http://localhost:8080/v1/search/book/history'
 - 인기 키워드 목록(rank)
 	-  curl -X GET --header 'Accept: application/json' 'http://localhost:8080/v1/search/book/rank'
 
