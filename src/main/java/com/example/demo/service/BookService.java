@@ -50,7 +50,7 @@ public class BookService {
     @Value("${naver.api.client.secret}")
     private String NAVER_API_CLIENT_SECRET;
 
-    private List<Object> searchKakaoBook(String keyword, int page) throws Exception {
+    private Object searchKakaoBook(String keyword, int page) throws Exception {
         final HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "KakaoAK " + KAKAO_REST_API_KEY);
         final HttpEntity<String> entity = new HttpEntity(headers);
@@ -59,16 +59,16 @@ public class BookService {
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         ObjectMapper mapper = new ObjectMapper();
 
-        Map<String, Object>resultData = mapper.readValue(responseEntity.getBody(), new TypeReference<Map<String, Object>>() {
+        Map<String, Object>responseData = mapper.readValue(responseEntity.getBody(), new TypeReference<Map<String, Object>>() {
         });
 
-        List<Object> result = new ArrayList<>();
-        result.add(resultData.get("meta"));
-        result.add(resultData.get("documents"));
+        HashMap<String, Object> result = new LinkedHashMap();
+        result.put("meta", responseData.get("meta"));
+        result.put("books", responseData.get("documents"));
         return result;
     }
 
-    private List<Object> searchNaverBook(String keyword, int page) throws Exception {
+    private Object searchNaverBook(String keyword, int page) throws Exception {
         final HttpHeaders headers = new HttpHeaders();
         headers.set("X-Naver-Client-Id", NAVER_API_CLIENT_ID);
         headers.set("X-Naver-Client-Secret", NAVER_API_CLIENT_SECRET);
@@ -78,33 +78,30 @@ public class BookService {
         final String url = NAVER_API_BOOK_URL + "?query=" + keyword + "&start=" + (1 + (page-1) * 10) + "&size=" + size;
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object>resultData = mapper.readValue(responseEntity.getBody(), new TypeReference<Map<String, Object>>() {
+        Map<String, Object>responseData = mapper.readValue(responseEntity.getBody(), new TypeReference<Map<String, Object>>() {
         });
 
-        Integer total = (Integer)resultData.get("total");
-        Integer start = (Integer)resultData.get("start");
+        Integer total = (Integer)responseData.get("total");
+        Integer start = (Integer)responseData.get("start");
         Integer pageable_count = total > 1000? 1000 : total; // 1000 껀 까지만 페이징 됨 (page는 100 까지 입력 가능. 넘으면 에러 발생) ;;;
 
-        List<Object> result = new ArrayList<>();
+        HashMap<String, Object> resultData = new LinkedHashMap<>();
         HashMap<String, Object> meta = new LinkedHashMap<>();
 
 
         // 카카오 meta 정보와 맞춰주자.
-        meta.put("is_end", pageable_count > start + size - 1? "false" : "true");
+        meta.put("is_end", pageable_count > start + size - 1? false : true);
         meta.put("pageable_count", pageable_count);
         meta.put("total_count", total);
 
-        // 추가 meta 정보를 보여주자
-        meta.put("current_page", page);
-        meta.put("start", start);
-        result.add(meta);
-        result.add(resultData.get("items"));
-        return result;
+        resultData.put("meta", meta);
+        resultData.put("books", responseData.get("items"));
+        return resultData;
     }
 
     // 책 검색
     @Async
-    public CompletableFuture<List<Object>> search(String keyword, int page) throws Exception {
+    public CompletableFuture<Object> search(String keyword, int page) throws Exception {
         try {
             return CompletableFuture.completedFuture(searchKakaoBook(keyword, page));
         } catch (Exception e) {

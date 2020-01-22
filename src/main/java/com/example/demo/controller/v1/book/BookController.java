@@ -43,9 +43,9 @@ public class BookController {
         bookService.saveSearchHistory(uid, keyword);
         bookService.incrementSearchCount(keyword);
         try {
-            CompletableFuture<List<Object>> searchFuture = bookService.search(keyword, page);
+            CompletableFuture<Object> searchFuture = bookService.search(keyword, page);
             CompletableFuture.allOf(searchFuture).join();
-            return responseService.getListResult((searchFuture.get()));
+            return responseService.getSingleResult((searchFuture.get()));
         } catch (Exception e) {
             log.error("SEARCH BOOK FAILED. " + e.getMessage());
             throw new CBookSearchFailedException();
