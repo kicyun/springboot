@@ -19,7 +19,7 @@ public class UserService {
     private final UserJpaRepo userJpaRepo;
 
     // 사용자 검색
-    @Async
+    @Async("DatabaseThreadPoolTaskExecutor")
     public CompletableFuture<Optional<User>> findByUidAsync(String uid) throws InterruptedException, ExecutionException {
         Optional<User> user = userJpaRepo.findByUid(uid);
         return CompletableFuture
@@ -27,7 +27,7 @@ public class UserService {
     }
 
     // 사용자 저장
-    @Async
+    @Async("DatabaseThreadPoolTaskExecutor")
     public void saveAsync (User user) {
         userJpaRepo.save(user);
     }

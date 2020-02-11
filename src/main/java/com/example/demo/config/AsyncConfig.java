@@ -1,6 +1,7 @@
 package com.example.demo.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -31,4 +32,18 @@ public class AsyncConfig extends AsyncConfigurerSupport {
         executor.initialize();
         return executor;
     }
+
+    @Bean(name = "DatabaseThreadPoolTaskExecutor")
+    public Executor DataBaseThreadPoolTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(corePoolSize);
+        executor.setMaxPoolSize(maxPoolSize);
+        executor.setQueueCapacity(queueCapacity);
+
+        executor.setThreadNamePrefix("db-" + threadNamePrefix);
+
+        executor.initialize();
+        return executor;
+    }
+
 }

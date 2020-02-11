@@ -111,7 +111,7 @@ public class BookService {
     }
 
     // 검색 기록 저장
-    @Async
+    @Async("DatabaseThreadPoolTaskExecutor")
     public void saveSearchHistoryAsync(String uid, String keyword) throws InterruptedException, ExecutionException {
 
         Optional<User> user = userJpaRepo.findByUid(uid);
@@ -119,15 +119,8 @@ public class BookService {
         searchHistoryJpaRepo.save(history);
     }
 
-    // 키워드 검색 수 증가
-    @Async
-    public void incrementSearchCountAsync(String keyword) {
-        ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
-        zSetOperations.incrementScore(cacheKey, keyword, 1);
-    }
-
     // 검색 기록 검색
-    @Async
+    @Async("DatabaseThreadPoolTaskExecutor")
     public CompletableFuture<List<SearchHistoryResult>> getSearchHistoryAsync(String uid) throws InterruptedException, ExecutionException {
         Optional<User> user = userJpaRepo.findByUid(uid);
 
@@ -145,6 +138,13 @@ public class BookService {
             searchHistoryResultList.add(searchHistoryResult);
         }
         return CompletableFuture.completedFuture(searchHistoryResultList);
+    }
+
+    // 키워드 검색 수 증가
+    @Async
+    public void incrementSearchCountAsync(String keyword) {
+        ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+        zSetOperations.incrementScore(cacheKey, keyword, 1);
     }
 
     // 검색 랭킹

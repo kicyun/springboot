@@ -40,7 +40,9 @@ public class BookController {
                 @RequestParam(name = "page", defaultValue = "1") Integer page) throws InterruptedException, ExecutionException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uid = authentication.getName();
+        // 비동기로 검색 기록을 저장하자.
         bookService.saveSearchHistoryAsync(uid, keyword);
+        // 비동기로 키워드 검색 카운트를 증가시키자.
         bookService.incrementSearchCountAsync(keyword);
         try {
             return responseService.getSingleResult(bookService.search(keyword, page));
