@@ -66,4 +66,5 @@
 ### aync 설정
 - https://heowc.dev/2018/02/10/spring-boot-async/
 - https://howtodoinjava.com/spring-boot2/rest/enableasync-async-controller/
-
+### hystrix 설정
+- https://spring.io/guides/gs/circuit-breaker/

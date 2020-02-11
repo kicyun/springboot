@@ -9,6 +9,7 @@ import com.example.demo.repo.SearchHistoryJpaRepo;
 import com.example.demo.repo.UserJpaRepo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -100,14 +101,13 @@ public class BookService {
     }
 
     // 책 검색
-    @Async
-    public CompletableFuture<Object> search(String keyword, int page) throws Exception {
-        try {
-            return CompletableFuture.completedFuture(searchKakaoBook(keyword, page));
-        } catch (Exception e) {
-            log.error("KAKAO SEARCH BOOK FAILED. " + e.getMessage());
-            return CompletableFuture.completedFuture(searchNaverBook(keyword, page));
-        }
+    @HystrixCommand(fallbackMethod = "fallbackSearch")
+    public Object search(String keyword, int page) throws Exception {
+        return searchKakaoBook(keyword, page);
+    }
+
+    public Object fallbackSearch(String keyword, int page) throws Exception {
+        return searchNaverBook(keyword, page);
     }
 
     // 검색 기록 저장
