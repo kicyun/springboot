@@ -44,6 +44,8 @@ class SignControllerTest {
                     .andExpect(jsonPath("$.code").value(0))
                     .andExpect(jsonPath("$.msg").exists());
         }
+        // 저장되는 시간을 기다려주자
+        Thread.sleep(1000);
         {
             MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
             params.add("id", "test_" + epochTime + "@test.com");

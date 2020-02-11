@@ -34,9 +34,8 @@ class UserJpaRepoTest {
                 .roles(Collections.singletonList("ROLE_USER"))
                 .build()
         );
-        CompletableFuture<Optional<User>> userFuture = userJpaRepo.findByUid(uid);
-        userFuture.allOf(userFuture).join();
-        Optional<User> user = userFuture.get();
+
+        Optional<User> user = userJpaRepo.findByUid(uid);
         assertNotNull(user);
         assertTrue(user.isPresent());
         assertEquals(user.get().getName(), name);
