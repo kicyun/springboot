@@ -59,7 +59,6 @@ public class BookController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uid = authentication.getName();
         CompletableFuture<List<SearchHistoryResult>> searchHistoryFuture = bookService.getSearchHistoryAsync(uid);
-        CompletableFuture.allOf(searchHistoryFuture).join();
         return responseService.getListResult(searchHistoryFuture.get());
     }
 

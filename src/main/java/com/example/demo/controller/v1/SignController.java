@@ -36,7 +36,6 @@ public class SignController {
     public SingleResult<String> signin(@ApiParam(value = "회원ID : 이메일", required = true) @RequestParam String id,
                                        @ApiParam(value = "비밀번호", required = true) @RequestParam String password) throws InterruptedException, ExecutionException {
         CompletableFuture<Optional<User>> userFuture = userService.findByUidAsync(id);
-        CompletableFuture.allOf(userFuture).join();
         User user = userFuture.get()
                 .orElseThrow(CEmailSigninFailedException::new);
         if (!passwordEncoder.matches(password, user.getPassword())) {
