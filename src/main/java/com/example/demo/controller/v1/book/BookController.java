@@ -40,8 +40,8 @@ public class BookController {
                 @RequestParam(name = "page", defaultValue = "1") Integer page) throws InterruptedException, ExecutionException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uid = authentication.getName();
-        bookService.saveSearchHistory(uid, keyword);
-        bookService.incrementSearchCount(keyword);
+        bookService.saveSearchHistoryAsync(uid, keyword);
+        bookService.incrementSearchCountAsync(keyword);
         try {
             return responseService.getSingleResult(bookService.search(keyword, page));
         } catch (Exception e) {
@@ -58,7 +58,7 @@ public class BookController {
     public ListResult<SearchHistoryResult> history() throws InterruptedException, ExecutionException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uid = authentication.getName();
-        CompletableFuture<List<SearchHistoryResult>> searchHistoryFuture = bookService.getSearchHistory(uid);
+        CompletableFuture<List<SearchHistoryResult>> searchHistoryFuture = bookService.getSearchHistoryAsync(uid);
         CompletableFuture.allOf(searchHistoryFuture).join();
         return responseService.getListResult(searchHistoryFuture.get());
     }
@@ -66,8 +66,7 @@ public class BookController {
     @ApiOperation(value = "인기 키워드 목록", notes = "인기 키워드 목록을 반환한다.")
     @GetMapping(value = "/rank")
     public ListResult<SearchRankResult> rank() throws InterruptedException, ExecutionException {
-        CompletableFuture<List<SearchRankResult>> searchRankFuture = bookService.getSearchRank();
-        CompletableFuture.allOf(searchRankFuture).join();
+        CompletableFuture<List<SearchRankResult>> searchRankFuture = bookService.getSearchRankAsync();
         return responseService.getListResult(searchRankFuture.get());
     }
 }

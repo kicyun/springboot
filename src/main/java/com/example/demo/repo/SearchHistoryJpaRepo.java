@@ -9,6 +9,5 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface SearchHistoryJpaRepo extends JpaRepository<SearchHistory, Long> {
-    @Async
-    CompletableFuture<List<SearchHistory>> findByUserOrderByCratedAtDesc(User user);
+    List<SearchHistory> findByUserOrderByCratedAtDesc(User user);
 }

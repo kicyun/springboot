@@ -20,17 +20,15 @@ public class UserService {
 
     // 사용자 검색
     @Async
-    public CompletableFuture<Optional<User>> findByUid(String uid) throws InterruptedException, ExecutionException {
-        CompletableFuture<Optional<User>> userFuture = userJpaRepo.findByUid(uid);
-        CompletableFuture.allOf(userFuture).join();
-        Optional<User> user = userFuture.get();
+    public CompletableFuture<Optional<User>> findByUidAsync(String uid) throws InterruptedException, ExecutionException {
+        Optional<User> user = userJpaRepo.findByUid(uid);
         return CompletableFuture
                 .completedFuture(user);
     }
 
     // 사용자 저장
     @Async
-    public void save(User user) {
+    public void saveAsync (User user) {
         userJpaRepo.save(user);
     }
 }

@@ -33,7 +33,7 @@ public class SignController {
     @PostMapping(value = "/signin")
     public SingleResult<String> signin(@ApiParam(value = "회원ID : 이메일", required = true) @RequestParam String id,
                                        @ApiParam(value = "비밀번호", required = true) @RequestParam String password) throws InterruptedException, ExecutionException {
-        CompletableFuture<Optional<User>> userFuture = userService.findByUid(id);
+        CompletableFuture<Optional<User>> userFuture = userService.findByUidAsync(id);
         CompletableFuture.allOf(userFuture).join();
         User user = userFuture.get()
                 .orElseThrow(CEmailSigninFailedException::new);
@@ -48,7 +48,7 @@ public class SignController {
     public CommonResult signup(@ApiParam(value = "회원ID : 이메일", required = true) @RequestParam String id,
                                @ApiParam(value = "비밀번호", required = true) @RequestParam String password,
                                @ApiParam(value = "이름",required = true) @RequestParam String name) {
-        userService.save(
+        userService.saveAsync(
                 User.builder()
                     .uid(id)
                     .password(passwordEncoder.encode(password))

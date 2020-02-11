@@ -112,35 +112,28 @@ public class BookService {
 
     // 검색 기록 저장
     @Async
-    public void saveSearchHistory(String uid, String keyword) throws InterruptedException, ExecutionException {
+    public void saveSearchHistoryAsync(String uid, String keyword) throws InterruptedException, ExecutionException {
 
-        CompletableFuture<Optional<User>> userFuture = userJpaRepo.findByUid(uid);
-        CompletableFuture.allOf(userFuture).join();
-        Optional<User> user = userFuture.get();
+        Optional<User> user = userJpaRepo.findByUid(uid);
         SearchHistory history = new SearchHistory(user.orElseThrow(CUserNotFoundException::new), keyword);
         searchHistoryJpaRepo.save(history);
     }
 
     // 키워드 검색 수 증가
     @Async
-    public void incrementSearchCount(String keyword) {
+    public void incrementSearchCountAsync(String keyword) {
         ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
         zSetOperations.incrementScore(cacheKey, keyword, 1);
     }
 
     // 검색 기록 검색
     @Async
-    public CompletableFuture<List<SearchHistoryResult>> getSearchHistory(String uid) throws InterruptedException, ExecutionException {
-        CompletableFuture<Optional<User>> userFuture = userJpaRepo.findByUid(uid);
-        CompletableFuture.allOf(userFuture).join();
-        Optional<User> user = userFuture.get();
+    public CompletableFuture<List<SearchHistoryResult>> getSearchHistoryAsync(String uid) throws InterruptedException, ExecutionException {
+        Optional<User> user = userJpaRepo.findByUid(uid);
 
-        CompletableFuture<List<SearchHistory>> searchHistoryListFuture = searchHistoryJpaRepo
+        List<SearchHistory> searchHistoryList = searchHistoryJpaRepo
                 .findByUserOrderByCratedAtDesc(
                         user.orElseThrow(CUserNotFoundException::new));
-
-        searchHistoryListFuture.allOf(searchHistoryListFuture).join();
-        List<SearchHistory> searchHistoryList = searchHistoryListFuture.get();
 
         List<SearchHistoryResult> searchHistoryResultList = new ArrayList<>();
 
@@ -156,7 +149,7 @@ public class BookService {
 
     // 검색 랭킹
     @Async
-    public CompletableFuture<List<SearchRankResult>> getSearchRank() {
+    public CompletableFuture<List<SearchRankResult>> getSearchRankAsync() {
         ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
         Set<ZSetOperations.TypedTuple<String>> rankingSet = zSetOperations.reverseRangeWithScores(cacheKey, 0, 9);
         List<SearchRankResult> searchRankResultList = new ArrayList<>();

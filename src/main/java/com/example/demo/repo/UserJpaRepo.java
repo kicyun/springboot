@@ -8,6 +8,5 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public interface UserJpaRepo extends JpaRepository<User, Long> {
-    @Async
-    CompletableFuture<Optional<User>> findByUid(String email);
+    Optional<User> findByUid(String email);
 }
