@@ -41,7 +41,7 @@ public class SignController {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new CEmailSigninFailedException();
         }
-        return responseService.getSingleResult(jwtTokenProvider.createToken(String.valueOf(user.getMsrl()), user.getRoles()));
+        return responseService.getSingleResult(jwtTokenProvider.createToken(user));
     }
 
     @ApiOperation(value = "이메일 회원가입", notes = "이메일 회원 가입")

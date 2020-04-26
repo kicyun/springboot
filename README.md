@@ -68,3 +68,5 @@
 - https://howtodoinjava.com/spring-boot2/rest/enableasync-async-controller/
 ### hystrix 설정
 - https://spring.io/guides/gs/circuit-breaker/
+### Jwt 토큰정보로 필터링 된 유저정보를 컨트롤러단에서 @AuthenticationPricipal 어노테이션을 통해 가져오는법
+- https://velog.io/@sonaky47/Spring-Security-Jwt-%ED%86%A0%ED%81%B0%EC%A0%95%EB%B3%B4%EB%A1%9C-%ED%95%84%ED%84%B0%EB%A7%81-%EB%90%9C-%EC%9C%A0%EC%A0%80%EC%A0%95%EB%B3%B4%EB%A5%BC-%EC%BB%A8%ED%8A%B8%EB%A1%A4%EB%9F%AC%EB%8B%A8%EC%97%90%EC%84%9C-AuthenticationPricipal-%EC%96%B4%EB%85%B8%ED%85%8C%EC%9D%B4%EC%85%98%EC%9D%84-%ED%86%B5%ED%95%B4-%EA%B0%80%EC%A0%B8%EC%98%A4%EB%8A%94%EB%B2%95

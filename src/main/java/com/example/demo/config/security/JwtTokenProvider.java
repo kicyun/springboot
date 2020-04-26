@@ -1,5 +1,6 @@
 package com.example.demo.config.security;
 
+import com.example.demo.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -34,9 +35,11 @@ public class JwtTokenProvider {
     }
 
     // Jwt Token 생성
-    public String createToken(String userPk, List<String> roles) {
-        Claims claims = Jwts.claims().setSubject(userPk);
-        claims.put("roles", roles);
+    public String createToken(User user) {
+        Claims claims = Jwts.claims().setSubject(String.valueOf(user.getMsrl()));
+        claims.put("uid", user.getUid());
+        claims.put("name", user.getName());
+        claims.put("roles", user.getRoles());
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims) // 데이터
@@ -48,8 +51,9 @@ public class JwtTokenProvider {
 
     // Jwt 토큰으로 인증 정보를 조회
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        Claims claims = (Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)).getBody();
+        User user = new User(claims);
+        return new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities());
     }
 
     // Jwt 토큰에서 회원 구별 정보 추출

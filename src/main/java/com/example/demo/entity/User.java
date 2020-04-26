@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -73,5 +74,12 @@ public class User extends CommonDateEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public User (Claims claims) {
+        this.msrl = Long.parseLong(claims.getSubject());
+        this.name = (String)claims.get("name");
+        this.uid = (String)claims.get("uid");
+        this.roles = (List<String>)claims.get("roles");
     }
 }
